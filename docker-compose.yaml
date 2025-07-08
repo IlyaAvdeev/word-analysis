@@ -1,0 +1,51 @@
+version: "3.0"
+networks:
+  #https://docs.docker.com/compose/networking/
+  internalnetwork:
+  externalnetwork:
+services:
+  word-games:
+    image: "ilyaavdeev/word-games"
+    build:
+      context: ./backend/word-games/
+      dockerfile: ./backend/word-games/src/main/docker/Dockerfile.jvm
+    container_name: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - internalnetwork
+      - externalnetwork
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  #https://habr.com/ru/post/578744/?
+  db:
+    container_name: postgres_container
+    build:
+      context: ./backend/common-db/
+      dockerfile: ./backend/common-db/Dockerfile
+    volumes:
+      - ./backend/DB/db:/var/lib/postgresql/data
+#      - ./backend/DB/secrets:/run/secrets
+      - ./backend/common-db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - internalnetwork
+  ojegov-uploader:
+    container_name: smart-ojegov
+    build:
+      args:
+        - WORKDIR_NAME_ARG: "/usr/src/app"
+        - OUTPUTDIR_NAME_ARG: "/output"
+      context: ./backend/common-db/Ojegov-vocabulary/
+      dockerfile: ./backend/common-db/Ojegov-vocabulary/Dockerfile
+    depends_on: db
+    volumes:
+      - ./resources/
+    networks:
+      - internalnetwork

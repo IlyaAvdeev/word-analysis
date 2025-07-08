@@ -1,0 +1,20 @@
+version: "3.0"
+networks:
+  #https://docs.docker.com/compose/networking/
+  internalnetwork-f:
+services:
+  db:
+    image: ilyaavdeev/pg-words:1.0
+    container_name: postgres_container_final
+    environment:
+      POSTGRES_DB: words
+      POSTGRES_USER: p_user
+      POSTGRES_PASSWORD: p_password
+      PGDATA: /var/lib/postgresql/data
+    build:
+      context: .
+      dockerfile: ./Dockerfile-final
+    ports:
+      - 5432:5432
+    networks:
+      - internalnetwork-f

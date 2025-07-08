@@ -311,9 +311,9 @@ def runner() -> None:
     try:
         with psycopg2.connect(
                 dbname="words",
-                user="postgres",
-                password="password",
-                host="172.17.0.1",
+                user="p_user",
+                password="p_password",
+                host="db",
                 port="5432"
         ) as conn:
             with conn.cursor() as cur:

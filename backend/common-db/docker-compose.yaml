@@ -1,0 +1,37 @@
+version: "3.0"
+networks:
+  #https://docs.docker.com/compose/networking/
+  internalnetwork:
+services:
+  db:
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: words
+      POSTGRES_USER: p_user
+      POSTGRES_PASSWORD: p_password
+      PGDATA: /var/lib/postgresql/data
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d:ro
+      - ./russian-words/russian.utf-8:/init_voc/russian.utf-8:ro
+    networks:
+      - internalnetwork
+  ojegov-uploader:
+    container_name: smart-ojegov
+    build:
+      args:
+        WORKDIR_NAME_ARG: "/usr/src/app"
+        OUTPUTDIR_NAME_ARG: "/output"
+      context: .
+      dockerfile: ./Ojegov-vocabulary/Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./output:/output
+    networks:
+      - internalnetwork

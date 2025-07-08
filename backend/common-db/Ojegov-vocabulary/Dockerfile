@@ -8,8 +8,9 @@ ENV OUTPPUTDIR_PATH=${OUTPUTDIR_NAME_ARG}
 
 WORKDIR ${WORKDIR_NAME_ARG}
 RUN mkdir ${OUTPUTDIR_NAME_ARG}
-COPY ./resources/requirements.txt ./
-COPY ./resources/Ожегов_С._Толковый_словарь_русского_языка.txt ./
+COPY ./Ojegov-vocabulary/resources/requirements.txt ./
+COPY ./Ojegov-vocabulary/resources/Ожегов_С._Толковый_словарь_русского_языка.txt ./
+COPY ./Ojegov-vocabulary/TextProcessor.py ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .

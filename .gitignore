@@ -31,5 +31,6 @@ release.properties
 # TLS Certificates
 .certs/
 
-/backend/Ojegov-vocabulary/db_content
-/backend/russian-words/sql/db
+/backend/common-db/db
+/backend/common-db/output
+/backend/common-db/russian-words/sql/db

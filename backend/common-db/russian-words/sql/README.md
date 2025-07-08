@@ -1,4 +1,5 @@
-Создаём основную базу данных на основе Postgresql. Как запускать docker image описано [здесь|https://github.com/docker-library/docs/blob/master/postgres/README.md]. 
+Создаём основную базу данных на основе Postgresql. Как запускать docker image описано 
+[здесь|https://github.com/docker-library/docs/blob/master/postgres/README.md]. 
 Командная строка следующая:
 
 ```shell
