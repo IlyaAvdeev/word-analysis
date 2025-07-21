@@ -101,7 +101,7 @@ def transformToCSV(fw, skip_line_count, path_to_source_file, DELIMITER_SIGN, sou
             if len(strippedLine) == 1: # в этом случае это переключение на новую букву
                 continue
 
-            main_word = extractFirstWordFromLine(line)
+            main_word = extractFirstWordFromLine(line).lower()
             explanation = line[len(main_word):]
 
             fw.write(main_word)

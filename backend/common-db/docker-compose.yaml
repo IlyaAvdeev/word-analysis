@@ -3,7 +3,7 @@ networks:
   internalnetwork:
 services:
   db:
-    image: ilya.avdeev/keen-pg:1.0
+    image: ilyaavdeev/pg-words:1.1
     container_name: postgres_container
     environment:
       PGDATA: /var/lib/postgresql/data
