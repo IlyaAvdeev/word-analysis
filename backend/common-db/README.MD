@@ -1,19 +1,25 @@
 # Создание докер образа внутри которого будут сидеть словари (без привязки к внешних хранилищам данных)
 
-1. Создание образа PG с подготовленной структурой БД для словарей
+1. Создание образа который преобразует входные данные по словарю Ожегова в нужный нам для импорта формат (CSV)
 
 ```shell
-docker-compose build --no-cache
+docker-compose build ojegov-uploader --no-cache
 ```
 
-```shell
-docker-compose up
-```
+2. Запускаем ранее подготовленный образ, чтобы получить необходимые данные в папке `output` для последующей загрузки
 
 ```shell
-docker-compose -f ./docker-compose-final.yaml build
+docker-compose run ojegov-uploader
 ```
 
+3. Собираем финальный образ словарей:
+
 ```shell
-docker-compose -f ./docker-compose-final.yaml up
+docker-compose build db --no-cache
+```
+
+4. Запускаем БД со словарями с помощью:
+
+```shell
+docker-compose up db
 ```
