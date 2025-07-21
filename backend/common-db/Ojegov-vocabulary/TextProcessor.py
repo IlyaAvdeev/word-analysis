@@ -17,7 +17,7 @@ def lineStartsWithCapitalizedWord(line) -> bool:
            return True
     return False
 
-# Удаляем все строки котоыре после отсечения пробелов и табуляций превращаются в пустую строку
+# Удаляем все строки которые после отсечения пробелов и табуляций превращаются в пустую строку
 def dropEmptyLines(fw, pathToFile, sourceEncoding) -> None:
     with open(pathToFile, 'rt', encoding=sourceEncoding) as fr:
         for line in fr:
@@ -89,6 +89,24 @@ def concatLines(fw, skipLines, pathToFile, sourceEncoding) -> None:
                     fw.write('\n')
                     strippedLine = strippedNextLine
                     checkFollowingLines = True
+
+def transformToCSV(fw, skip_line_count, path_to_source_file, DELIMITER_SIGN, sourceEncoding) -> None:
+    with open(path_to_source_file, 'rt', encoding=sourceEncoding) as fr:
+        i = 0
+        for line in fr:
+            if i < skip_line_count:
+                i = i + 1
+                continue
+            strippedLine = line.strip()
+            if len(strippedLine) == 1: # в этом случае это переключение на новую букву
+                continue
+
+            main_word = extractFirstWordFromLine(line)
+            explanation = line[len(main_word):]
+
+            fw.write(main_word)
+            fw.write(DELIMITER_SIGN)
+            fw.write(explanation)
 
 """
 Ищем подозрительно короткие строки которые потенциально могут указывать на то что пояснение к слову может быть разбито на несколько строк
@@ -304,37 +322,42 @@ def runner() -> None:
         concatLines(fw, 4, outputdir + '/03.compressed_vocabulary.txt', 'utf-8')
     fw.close()
 
-    # 5. Выводим подозрительные слова
+    #5. Переделываем в CSV формат
+    with open(outputdir + '/prepared_voc.txt', 'w', newline='') as fw:
+        transformToCSV(fw, 4, outputdir + '/04.concat_lines.txt', '#','utf-8')
+    fw.close()
+
+    # 6. Выводим подозрительные слова
     findInconsistencies(outputdir + '/04.concat_lines.txt', 4, 'utf-8')
 
     # 6. Засовываем всё что напарсили в БД
-    try:
-        with psycopg2.connect(
-                dbname="words",
-                user="p_user",
-                password="p_password",
-                host="db",
-                port="5432"
-        ) as conn:
-            with conn.cursor() as cur:
-                try:
-                    with open(outputdir + '/04.concat_lines.txt', 'rt', encoding='utf-8') as fr:
-                        for i in range(4):
-                            fr.readline()
-                        counter = 0
-                        for line in fr:
-                            word = extractFirstWordFromLine(line)
-                            cur.execute("INSERT INTO public.ojegov(word, explanation) VALUES (lower(%s), %s);", (word, line[len(word):].lstrip(',').strip()))
-                            counter = counter + 1
-                            if counter % 100 == 0:
-                                conn.commit()
-                                print(f"Committed transaction after: {counter}")
-                        conn.commit()
-                except Error as e:
-                    conn.rollback()
-                    print(f"Transaction failed: {e.pgcode} - {e.pgerror}")
-    except Exception as e:
-        print(f"The error has occurred. Details: {e}")
+    # try:
+    #     with psycopg2.connect(
+    #             dbname="words",
+    #             user="p_user",
+    #             password="p_password",
+    #             host="db",
+    #             port="5432"
+    #     ) as conn:
+    #         with conn.cursor() as cur:
+    #             try:
+    #                 with open(outputdir + '/04.concat_lines.txt', 'rt', encoding='utf-8') as fr:
+    #                     for i in range(4):
+    #                         fr.readline()
+    #                     counter = 0
+    #                     for line in fr:
+    #                         word = extractFirstWordFromLine(line)
+    #                         cur.execute("INSERT INTO public.ojegov(word, explanation) VALUES (lower(%s), %s);", (word, line[len(word):].lstrip(',').strip()))
+    #                         counter = counter + 1
+    #                         if counter % 100 == 0:
+    #                             conn.commit()
+    #                             print(f"Committed transaction after: {counter}")
+    #                     conn.commit()
+    #             except Error as e:
+    #                 conn.rollback()
+    #                 print(f"Transaction failed: {e.pgcode} - {e.pgerror}")
+    # except Exception as e:
+    #     print(f"The error has occurred. Details: {e}")
 
 if __name__ == '__main__':
     runner()
