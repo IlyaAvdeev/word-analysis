@@ -1,6 +1,6 @@
 \connect words;
 
-CREATE TABLE ojegov (
+CREATE TABLE public.ojegov (
     word VARCHAR(80) NOT NULL,
     explanation TEXT NOT NULL
 );

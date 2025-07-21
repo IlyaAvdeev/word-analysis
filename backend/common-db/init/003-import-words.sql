@@ -1,1 +1,3 @@
-COPY all_words FROM '/init_voc/russian.utf-8' ( FORMAT TEXT );
+\connect words;
+
+COPY public.all_words FROM '/init_voc/russian.utf-8' ( FORMAT TEXT );
