@@ -1,0 +1,6 @@
+quarkus:
+  openapi:
+    generator:
+      spec: word-games.yaml
+      base-package: avdeev.one
+      reactive: false

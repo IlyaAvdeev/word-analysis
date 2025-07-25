@@ -1,5 +1,12 @@
 # word-games
 
+## Installed plugins
+
+```shell
+quarkus ext add io.quarkiverse.openapi.generator:quarkus-openapi-generator
+quarkus extension add quarkus-config-yaml
+```
+
 https://code.quarkus.io/
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.

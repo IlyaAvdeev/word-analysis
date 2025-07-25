@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: Word games
+  description: Определение сервиса работы над русскими словами
+  version: 1.0.0
+servers:
+  - url: https://avdeev.one/words
+    description: Production server
+  - url: https://avdeev.test/words
+    description: Stage environment
+
+paths:
+  /v1/crawler/letters:
+    post:
+      tags:
+        - searchByLetters
+      summary: Подбор слов по буквам
+      description: Находит во внутренних словарях все слова которые удовлетворяют входящим критериям по буквам
+      operationId: getWordByLetters
+      parameters:
+        # Path параметр (обязательный)
+#        - name: resourceId
+#          in: path
+#          description: ID ресурса
+#          required: true
+#          schema:
+#            type: string
+#            format: uuid
+#            example: "123e4567-e89b-12d3-a456-426614174000"
+
+        # Query параметры
+#        - name: page
+#          in: query
+#          description: Номер страницы для пагинации
+#          required: false
+#          schema:
+#            type: integer
+#            minimum: 1
+#            default: 1
+#            example: 1
+
+        - name: limit
+          in: query
+          description: Лимит элементов на странице
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 10
+
+#        - name: filter
+#          in: query
+#          description: Фильтр по имени (можно использовать несколько раз)
+#          required: false
+#          explode: true
+#          style: form
+#          schema:
+#            type: array
+#            items:
+#              type: string
+#            example: ["active", "verified"]
+
+        # Header параметры
+        - name: X-Request-ID
+          in: header
+          description: Уникальный ID запроса для трейсинга
+          required: false
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+
+        # Cookie параметры
+        - name: session_id
+          in: cookie
+          description: Идентификатор сессии
+          required: false
+          schema:
+            type: string
+            example: "sess_550e8400e29b41d4a716446655440000"
+
+      requestBody:
+        description: Описатель разыскиваемого слова
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WordCriteria"
+
+      responses:
+        '200':
+          description: Успешный ответ
+#          headers:
+#            X-RateLimit-Limit:
+#              description: Лимит запросов
+#              schema:
+#                type: integer
+#                example: 100
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FoundWords"
+
+        '400':
+          description: Неверный запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PError"
+
+        '404':
+          description: Нет слов подходящих по заданным критериям
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordNotFoundError"
+
+components:
+  schemas:
+    WordCriteria:
+      type: object
+      description: Объект который хранит критерий для поиска слова
+      properties:
+        non_present_letters:
+          type: array
+          items:
+            type: string
+          example: ["а", "ъ"]
+        present_letters:
+          type: array
+          items:
+            type: string
+          example: ["п", "р", "?", "в", "е", "т"]
+
+    FoundWords:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-01T12:00:00Z"
+        totalElements:
+          type: integer
+          example: 100500
+        words:
+          type: array
+          items:
+            type: string
+          example: [ "Слово 1", "Слово 2" ]
+        pageNumber:
+          type: integer
+          example: 10
+          minimum: 1
+
+    WordNotFoundError:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "invalid_request"
+        message:
+          type: string
+          example: "Не найдены слова подходящие под критерии запроса"
+        noWordDetails:
+          type: object
+          properties:
+            missedLetters:
+              type: array
+              items:
+                type: string
+              example: ["а", "б", "в"]
+            pattern:
+              type: string
+              example: "а??бв"
+
+    PError:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "invalid_request"
+        message:
+          type: string
+          example: "Что за хрень вы у меня тут спрашиваете?"
+        original-request:
+          $ref: "#/components/schemas/WordCriteria"
