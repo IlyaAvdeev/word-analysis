@@ -1,4 +1,13 @@
 quarkus:
+  hibernate-orm:
+    database:
+      generation: validate
+  datasource:
+    db-kind: postgresql
+    username:
+    password:
+    jdbc:
+      url: jdbc:postgresql://localhost:5432/words
   openapi:
     generator:
       spec: word-games.yaml

@@ -133,6 +133,11 @@ components:
           items:
             type: string
           example: ["п", "р", "?", "в", "е", "т"]
+        misplaced_letters:
+          type: array
+          items:
+            type: string
+          example: ["??а??", "а??б?"]
 
     FoundWords:
       type: object
