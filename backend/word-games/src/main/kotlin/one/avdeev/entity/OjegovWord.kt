@@ -1,6 +1,21 @@
 package one.avdeev.entity
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase
+import jakarta.persistence.*
 
-class OjegovWord (val word:String, val explanation:String) : PanacheEntity() {
+@Entity(name = "Ojegov")
+data class OjegovWord (@Id
+                       @GeneratedValue(strategy = GenerationType.IDENTITY)
+/*
+                       @SequenceGenerator(
+                           name = "ojegov_id_seq",
+                           sequenceName = "ojegov_id_seq",
+                           allocationSize = 50
+                       )
+
+ */
+                       val id : Long,
+                       val word:String,
+                       val explanation:String) : PanacheEntityBase() {
+    constructor () : this(-1, "","") {}
 }

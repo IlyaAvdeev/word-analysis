@@ -2,10 +2,12 @@ quarkus:
   hibernate-orm:
     database:
       generation: validate
+    log:
+      sql: true
   datasource:
     db-kind: postgresql
-    username:
-    password:
+    username: p_user
+    password: p_password
     jdbc:
       url: jdbc:postgresql://localhost:5432/words
   openapi:

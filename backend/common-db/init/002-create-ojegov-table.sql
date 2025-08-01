@@ -1,6 +1,7 @@
 \connect words;
 
 CREATE TABLE public.ojegov (
+    id BIGINT PRIMARY KEY GENERATED always as identity,
     word VARCHAR(80) NOT NULL,
     explanation TEXT NOT NULL
 );

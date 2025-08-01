@@ -28,18 +28,28 @@ paths:
 #            format: uuid
 #            example: "123e4567-e89b-12d3-a456-426614174000"
 
-        # Query параметры
-#        - name: page
-#          in: query
-#          description: Номер страницы для пагинации
-#          required: false
-#          schema:
-#            type: integer
-#            minimum: 1
-#            default: 1
-#            example: 1
+        - name: length
+          in: query
+          description: Размер подбираемого слова
+          required: true
+          schema:
+            type: integer
+            minimum: 3
+            maximum: 50
+            default: 5
+            example: 7
 
-        - name: limit
+        - name: page
+          in: query
+          description: Номер страницы для пагинации
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+
+        - name: items
           in: query
           description: Лимит элементов на странице
           required: false
@@ -124,20 +134,23 @@ components:
       description: Объект который хранит критерий для поиска слова
       properties:
         non_present_letters:
+          description: Отсутствующие буквы
           type: array
           items:
             type: string
           example: ["а", "ъ"]
-        present_letters:
+        exact_letters:
+          description: Буквы, которые уже находятся на своих местах
           type: array
           items:
             type: string
           example: ["п", "р", "?", "в", "е", "т"]
         misplaced_letters:
+          description: Буквы, которые есть в слове, но находятся не на своём месте
           type: array
           items:
             type: string
-          example: ["??а??", "а??б?"]
+          example: ["??а??", "???б?"]
 
     FoundWords:
       type: object

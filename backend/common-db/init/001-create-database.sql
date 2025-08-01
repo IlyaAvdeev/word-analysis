@@ -16,5 +16,6 @@ CREATE DATABASE words WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = '
 \connect words;
 
 CREATE TABLE public.all_words (
-    word VARCHAR(200) NOT NULL PRIMARY KEY
+    id BIGINT PRIMARY KEY GENERATED always as identity,
+    word VARCHAR(200) NOT NULL
     );

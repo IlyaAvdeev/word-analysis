@@ -7,11 +7,12 @@ import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
+import one.avdeev.entity.AllWordsWord
 import one.avdeev.entity.OjegovWord
 import one.avdeev.error.InvalidInput
 
 @ApplicationScoped
-class OjegovRepository : PanacheRepository<OjegovWord> {
+class AllWordsRepository : PanacheRepository<AllWordsWord> {
 
     @PersistenceContext
     lateinit var entityManger: EntityManager
@@ -46,10 +47,10 @@ class OjegovRepository : PanacheRepository<OjegovWord> {
         val predicateSize = criteriaBuilder.equal(criteriaBuilder.length(root.get("word")), wordSize)
         allPredicates.add(predicateSize)
 
-        val existingLetters = misplacedLetters.map{(it.toCharArray().filter{it != '?'}.joinToString(""))}
+        val existingLetters = misplacedLetters.map{it.toCharArray().filter{it != '?'}.joinToString("")}
         if (existingLetters.isNotEmpty()) {
             val predicateContainsLetters =
-                existingLetters.map { criteriaBuilder.like(root.get("word"), "%$it%") }
+                existingLetters.map { criteriaBuilder.notLike(root.get("word"), "%$it%") }
             allPredicates.addAll(predicateContainsLetters)
         }
 
@@ -68,7 +69,7 @@ class OjegovRepository : PanacheRepository<OjegovWord> {
         }
 
         if (misplacedLetters.isNotEmpty()) {
-            val predicateMisplacedLetters = misplacedLetters.map { criteriaBuilder.notLike(root.get("word"), "$it") }
+            val predicateMisplacedLetters = misplacedLetters.map { criteriaBuilder.like(root.get("word"), "$it") }
             allPredicates.addAll(predicateMisplacedLetters)
         }
 
