@@ -32,10 +32,8 @@ class OjegovRepository : PanacheRepository<OjegovWord> {
             throw InvalidInput("В качестве буквы отсутствующей в слове переданы неоднобуквенные значения", nonPresentLettersErrored)
         }
 
-        if (exactLetters.isNotEmpty()) {
-            if (exactLetters.size != wordSize) {
-                throw InvalidInput("Размер определяемого слова $wordSize не совпадает с длиной переданного слова", exactLetters)
-            }
+        if (exactLetters.size != wordSize) {
+            throw InvalidInput("Размер определяемого слова $wordSize не совпадает с длиной переданного слова", exactLetters)
         }
 
         val criteriaBuilder: CriteriaBuilder = entityManger.criteriaBuilder
@@ -68,7 +66,7 @@ class OjegovRepository : PanacheRepository<OjegovWord> {
         }
 
         if (misplacedLetters.isNotEmpty()) {
-            val predicateMisplacedLetters = misplacedLetters.map { criteriaBuilder.notLike(root.get("word"), "$it") }
+            val predicateMisplacedLetters = misplacedLetters.map{it.replace('?', '_')}.map { criteriaBuilder.notLike(root.get("word"), "$it") }
             allPredicates.addAll(predicateMisplacedLetters)
         }
 
