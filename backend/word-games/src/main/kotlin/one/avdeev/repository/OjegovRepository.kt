@@ -72,6 +72,9 @@ class OjegovRepository : PanacheRepository<OjegovWord> {
             allPredicates.addAll(predicateMisplacedLetters)
         }
 
+        val no3dotsPredicate = criteriaBuilder.notLike(root.get("word"), "%…%")
+        allPredicates.add(no3dotsPredicate)
+
         val whereClause = criteriaBuilder.and(*allPredicates.toTypedArray())
         criteriaQuery.select(root).where(whereClause)
         criteriaQuery.orderBy(criteriaBuilder.asc(root.get<String>("word")))

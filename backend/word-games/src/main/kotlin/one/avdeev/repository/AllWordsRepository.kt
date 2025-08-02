@@ -47,6 +47,9 @@ class AllWordsRepository : PanacheRepository<AllWordsWord> {
         val predicateSize = criteriaBuilder.equal(criteriaBuilder.length(root.get("word")), wordSize)
         allPredicates.add(predicateSize)
 
+        val no3dotsPredicate = criteriaBuilder.notLike(root.get("word"), "%…%")
+        allPredicates.add(no3dotsPredicate)
+
         val existingLetters = misplacedLetters.map{it.toCharArray().filter{it != '?'}.joinToString("")}
         if (existingLetters.isNotEmpty()) {
             val predicateContainsLetters =
