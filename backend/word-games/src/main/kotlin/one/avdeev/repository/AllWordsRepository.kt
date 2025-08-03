@@ -22,7 +22,7 @@ class AllWordsRepository : PanacheRepository<AllWordsWord> {
                  exactLetters: List<String>,
                  misplacedLetters: List<String>,
                  pageIndex: Int = 0,
-                 pageSize: Int = 20): List<OjegovWord> {
+                 pageSize: Int = 20): List<AllWordsWord> {
         val misplacedLettersError = misplacedLetters.filter { it.length != wordSize }
         if (misplacedLettersError.isNotEmpty()) {
             throw InvalidInput("Размер определяемого слова - $wordSize", misplacedLettersError)
@@ -38,8 +38,8 @@ class AllWordsRepository : PanacheRepository<AllWordsWord> {
         }
 
         val criteriaBuilder: CriteriaBuilder = entityManger.criteriaBuilder
-        val criteriaQuery: CriteriaQuery<OjegovWord> = criteriaBuilder.createQuery(OjegovWord::class.java)
-        val root: Root<OjegovWord> = criteriaQuery.from(OjegovWord::class.java)
+        val criteriaQuery: CriteriaQuery<AllWordsWord> = criteriaBuilder.createQuery(AllWordsWord::class.java)
+        val root: Root<AllWordsWord> = criteriaQuery.from(AllWordsWord::class.java)
         val allPredicates: MutableList<Predicate> = ArrayList();
 
         val predicateSize = criteriaBuilder.equal(criteriaBuilder.length(root.get("word")), wordSize)
@@ -88,7 +88,7 @@ class AllWordsRepository : PanacheRepository<AllWordsWord> {
         val results = typedQuery.resultList
 /*
         val countQuery = criteriaBuilder.createQuery(Long::class.java)
-        val countRoot = countQuery.from(OjegovWord::class.java)
+        val countRoot = countQuery.from(AllWordsWord::class.java)
         val countPredicates = criteriaBuilder.and(*allPredicates.toTypedArray())
         countQuery.select(criteriaBuilder.count(countRoot)).where(countPredicates)
         val totalCount = getEntityManager().createQuery(countQuery).singleResult
