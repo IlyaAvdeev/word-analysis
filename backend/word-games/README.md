@@ -1,5 +1,7 @@
 # word-games
 
+https://web.archive.org/web/20200705182909/http://www.speakrus.ru/dict/
+
 ## Installed plugins
 
 ```shell
