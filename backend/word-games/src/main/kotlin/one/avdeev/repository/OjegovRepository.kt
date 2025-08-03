@@ -35,6 +35,7 @@ class OjegovRepository : PanacheRepository<OjegovWord> {
         if (exactLetters.size != wordSize) {
             throw InvalidInput("Размер определяемого слова $wordSize не совпадает с длиной переданного слова", exactLetters)
         }
+        //--------------------------------------
 
         val criteriaBuilder: CriteriaBuilder = entityManger.criteriaBuilder
         val criteriaQuery: CriteriaQuery<OjegovWord> = criteriaBuilder.createQuery(OjegovWord::class.java)
@@ -44,7 +45,7 @@ class OjegovRepository : PanacheRepository<OjegovWord> {
         val predicateSize = criteriaBuilder.equal(criteriaBuilder.length(root.get("word")), wordSize)
         allPredicates.add(predicateSize)
 
-        val existingLetters = misplacedLetters.map{(it.toCharArray().filter{it != '?'}.joinToString(""))}
+        val existingLetters = misplacedLetters.map{(it.toCharArray().filter{it != '?'}).distinct()}.flatten().distinct()
         if (existingLetters.isNotEmpty()) {
             val predicateContainsLetters =
                 existingLetters.map { criteriaBuilder.like(root.get("word"), "%$it%") }

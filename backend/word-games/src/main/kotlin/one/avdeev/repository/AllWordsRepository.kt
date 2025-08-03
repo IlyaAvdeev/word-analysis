@@ -48,10 +48,10 @@ class AllWordsRepository : PanacheRepository<AllWordsWord> {
         val no3dotsPredicate = criteriaBuilder.notLike(root.get("word"), "%…%")
         allPredicates.add(no3dotsPredicate)
 
-        val existingLetters = misplacedLetters.map{it.toCharArray().filter{it != '?'}.joinToString("")}
+        val existingLetters = misplacedLetters.map{(it.toCharArray().filter{it != '?'}).distinct()}.flatten().distinct()
         if (existingLetters.isNotEmpty()) {
             val predicateContainsLetters =
-                existingLetters.map { criteriaBuilder.notLike(root.get("word"), "%$it%") }
+                existingLetters.map { criteriaBuilder.like(root.get("word"), "%$it%") }
             allPredicates.addAll(predicateContainsLetters)
         }
 
