@@ -42,37 +42,17 @@ class AllWordsRepository : PanacheRepository<AllWordsWord> {
         val root: Root<AllWordsWord> = criteriaQuery.from(AllWordsWord::class.java)
         val allPredicates: MutableList<Predicate> = ArrayList();
 
-        val predicateSize = criteriaBuilder.equal(criteriaBuilder.length(root.get("word")), wordSize)
-        allPredicates.add(predicateSize)
+        sizePredicateComposer(criteriaBuilder, root, wordSize, allPredicates)
 
-        val no3dotsPredicate = criteriaBuilder.notLike(root.get("word"), "%…%")
-        allPredicates.add(no3dotsPredicate)
+        ellipsisSignExcluderPrepdicateComposer(criteriaBuilder, root, allPredicates)
 
-        val existingLetters = misplacedLetters.map{(it.toCharArray().filter{it != '?'}).distinct()}.flatten().distinct()
-        if (existingLetters.isNotEmpty()) {
-            val predicateContainsLetters =
-                existingLetters.map { criteriaBuilder.like(root.get("word"), "%$it%") }
-            allPredicates.addAll(predicateContainsLetters)
-        }
+        existingLettersPredicateComposer(misplacedLetters, criteriaBuilder, root, allPredicates)
 
-        if (exactLetters.isNotEmpty()) {
-            val predicateWordLikePattern = criteriaBuilder.like(
-                root.get("word"),
-                exactLetters.map { if (it == "?") "_" else it }.joinToString("")
-            )
-            allPredicates.add(predicateWordLikePattern)
-        }
+        exactLettersPredicateComposer(exactLetters, criteriaBuilder, root, allPredicates)
 
-        if (nonPresentLetters.isNotEmpty()) {
-            val predicateNotContainsLetters =
-                nonPresentLetters.map { criteriaBuilder.notLike(root.get("word"), "%$it%") }
-            allPredicates.addAll(predicateNotContainsLetters)
-        }
+        nonPresentLettersPredicateComposer(nonPresentLetters, criteriaBuilder, root, allPredicates)
 
-        if (misplacedLetters.isNotEmpty()) {
-            val predicateMisplacedLetters = misplacedLetters.map{it.replace('?', '_')}.map { criteriaBuilder.notLike(root.get("word"), "$it") }
-            allPredicates.addAll(predicateMisplacedLetters)
-        }
+        misplacedLettersPredicateComposer(misplacedLetters, criteriaBuilder, root, allPredicates)
 
         val whereClause = criteriaBuilder.and(*allPredicates.toTypedArray())
         criteriaQuery.select(root).where(whereClause)
