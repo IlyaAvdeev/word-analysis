@@ -1,17 +1,36 @@
 quarkus:
-  hibernate-orm:
-    database:
-      generation: validate
-    log:
-      sql: true
   datasource:
-    db-kind: postgresql
-    username: p_user
-    password: p_password
-    jdbc:
-      url: jdbc:postgresql://localhost:5432/words
+    devservices:
+      enabled: true # https://quarkus.io/guides/hibernate-orm#dev-mode
+      show-logs: true
+
   openapi:
     generator:
       spec: word-games.yaml
       base-package: avdeev.one
       reactive: false
+
+testcontainers:
+  reuse:
+    enable: true
+
+"%dev":
+  quarkus:
+    hibernate-orm:
+      schema-management:
+        strategy: drop-and-create
+      sql-load-script: import.sql
+
+"%prod":
+  quarkus:
+    hibernate-orm:
+      database:
+        generation: validate
+      log:
+        sql: true
+    datasource:
+      db-kind: postgresql
+      username: p_user
+      password: p_password
+      jdbc:
+        url: jdbc:postgresql://localhost:5432/words
