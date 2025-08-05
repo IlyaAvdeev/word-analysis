@@ -2,8 +2,8 @@ package one.avdeev
 
 import io.quarkus.test.junit.QuarkusTest
 import jakarta.inject.Inject
+import one.avdeev.error.InvalidInput
 import one.avdeev.repository.AllWordsRepository
-import one.avdeev.repository.OjegovRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -60,6 +60,28 @@ class AllWordsRepositoryTest {
         Assertions.assertEquals(1, foundWords.count(), "Ожидаемо количество найденных слов 1")
         Assertions.assertTrue(foundWords.map{it.word}.contains("слива"), "Слова Слива в списке найденных нет")
     }
+
+    @Test
+    fun given_OjegovRepositoryContainsWords_when_RequestWordSearchingByMatchedLettersButInputIsIncorrect_then_ExceptionIsThrown () {
+        val exception = Assertions.assertThrows(InvalidInput::class.java, {allWordsRepository.findWord(4, ArrayList<String>(), listOf("?", "?", "?", "?"), listOf("брак", "опапа", "jdshfsj"))})
+        Assertions.assertEquals("Размер определяемого слова - 4", "Размер определяемого слова - 4")
+        Assertions.assertArrayEquals(arrayOf("опапа", "jdshfsj"), exception.details.toTypedArray())
+    }
+
+    @Test
+    fun given_OjegovRepositoryContainsWords_when_RequestWordSearchingByMisplacedLettersButInputIsIncorrect_then_ExceptionIsThrown () {
+        val exception = Assertions.assertThrows(InvalidInput::class.java, {allWordsRepository.findWord(4, ArrayList<String>(), listOf("?", "?", "п", "?","?"), ArrayList<String>())})
+        Assertions.assertEquals(exception.message, "Размер определяемого слова 4 не совпадает с длиной переданного слова")
+        Assertions.assertArrayEquals(arrayOf("?", "?", "п", "?", "?"), exception.details.toTypedArray())
+    }
+
+    @Test
+    fun given_OjegovRepositoryContainsWords_when_RequestWordSearchingByNonPresentLettersButInputIsIncorrect_then_ExceptionIsThrown () {
+        val exception = Assertions.assertThrows(InvalidInput::class.java, {allWordsRepository.findWord(3, listOf("а", "рр", "п",), listOf("?", "?", "?"), ArrayList<String>())})
+        Assertions.assertEquals(exception.message, "В качестве буквы отсутствующей в слове переданы неоднобуквенные значения")
+        Assertions.assertArrayEquals(arrayOf("рр"), exception.details.toTypedArray())
+    }
+
 
     /*
         @Test
