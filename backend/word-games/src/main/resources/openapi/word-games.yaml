@@ -175,23 +175,12 @@ components:
     WordNotFoundError:
       type: object
       properties:
-        code:
-          type: string
-          example: "invalid_request"
         message:
           type: string
           example: "Не найдены слова подходящие под критерии запроса"
         noWordDetails:
-          type: object
-          properties:
-            missedLetters:
-              type: array
-              items:
-                type: string
-              example: ["а", "б", "в"]
-            pattern:
-              type: string
-              example: "а??бв"
+          schema:
+            $ref: "#/components/schemas/WordCriteria"
 
     PError:
       type: object

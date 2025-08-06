@@ -4,6 +4,7 @@ import avdeev.one.V1Resource
 import avdeev.one.beans.FoundWords
 import avdeev.one.beans.WordCriteria
 import jakarta.inject.Inject
+import one.avdeev.error.NoMatchedWords
 import one.avdeev.repository.AllWordsRepository
 import one.avdeev.repository.OjegovRepository
 import java.math.BigInteger
@@ -31,6 +32,10 @@ class WordCrawlerV1 : V1Resource {
         val allWordsResults = allWordsRepository.findWord(length!!.toInt(), data!!.nonPresentLetters, data.exactLetters, data.misplacedLetters, 1, 20)
 
         var totalResults = listOf(ojegovResults.map{it.word}, allWordsResults.map{it.word}).flatten().distinct()
+
+        if (totalResults.size == 0) {
+            throw NoMatchedWords("Нет слов подходящих под заданные критерии.", data)
+        }
 
         val foundWords : FoundWords = FoundWords()
         foundWords.createdAt = Date.from(Instant.now())

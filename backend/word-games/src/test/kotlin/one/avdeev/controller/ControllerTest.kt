@@ -18,8 +18,6 @@ class ControllerTest {
         search.misplacedLetters = ArrayList<String>()
         search.nonPresentLetters = ArrayList<String>()
 
-        val retArraySize : Int = 0;
-
         given()
             .queryParams(mapOf("length" to 7, "page" to 1, "items" to 20))
             .header("X-Request-ID", "11111")
@@ -29,9 +27,11 @@ class ControllerTest {
             .`when`()
             .post("/v1/crawler/letters")
             .then()
-            .statusCode(200)
-            .body("totalElements", equalTo(0))
-            .body("words", Matchers.hasSize<String>(retArraySize))
+            .statusCode(404)
+            .body("message", Matchers.equalTo<String>("Нет слов подходящих под заданные критерии."))
+            .body("noWordDetails.non_present_letters",Matchers.hasSize<String>(search.nonPresentLetters.size))
+            .body("noWordDetails.misplaced_letters",Matchers.hasSize<String>(search.misplacedLetters.size))
+            .body("noWordDetails.exact_letters",Matchers.equalTo(search.exactLetters))
     }
 
     @Test
@@ -78,4 +78,29 @@ class ControllerTest {
             .body("message", `is`("Размер определяемого слова 6 не совпадает с длиной переданного слова"))
             .body("details", Matchers.hasItems<String>("с", "?", "а"))
     }
+
+    @Test
+    fun simpleSearchBy5LettersUsingMisplacedAndNonPresentLettersWithPosititveResults() {
+        val search = WordCriteria()
+        search.exactLetters = listOf("с", "?", "?", "?", "?")
+        search.misplacedLetters = listOf("а????", "????в")
+        search.nonPresentLetters = listOf("т", "б")
+
+        val retArraySize : Int = 1;
+
+        given()
+            .queryParams(mapOf("length" to 5, "page" to 1, "items" to 20))
+            .header("X-Request-ID", "11111")
+            .cookie("session_id", "1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(search)
+            .`when`()
+            .post("/v1/crawler/letters")
+            .then()
+            .statusCode(200)
+            .body("totalElements", equalTo(retArraySize))
+            .body("words", Matchers.hasSize<String>(retArraySize))
+            .body("words", Matchers.hasItems<String>("слива"))
+    }
+
 }
