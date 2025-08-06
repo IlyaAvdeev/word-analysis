@@ -36,7 +36,7 @@ class WordCrawlerV1 : V1Resource {
         foundWords.createdAt = Date.from(Instant.now())
         foundWords.words = totalResults
         foundWords.pageNumber = page!!.toInt()
-        foundWords.totalElements = ojegovResults.size + allWordsResults.size
+        foundWords.totalElements = totalResults.size
 
         return foundWords
     }

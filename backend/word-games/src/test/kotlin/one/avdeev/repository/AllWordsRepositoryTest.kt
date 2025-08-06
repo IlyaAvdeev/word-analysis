@@ -1,9 +1,8 @@
-package one.avdeev
+package one.avdeev.repository
 
 import io.quarkus.test.junit.QuarkusTest
 import jakarta.inject.Inject
 import one.avdeev.error.InvalidInput
-import one.avdeev.repository.AllWordsRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -81,16 +80,4 @@ class AllWordsRepositoryTest {
         Assertions.assertEquals(exception.message, "В качестве буквы отсутствующей в слове переданы неоднобуквенные значения")
         Assertions.assertArrayEquals(arrayOf("рр"), exception.details.toTypedArray())
     }
-
-
-    /*
-        @Test
-        fun testHelloEndpoint() {
-            given()
-              .`when`().get("/hello")
-              .then()
-                 .statusCode(200)
-                 .body(`is`("Hello from Quarkus REST"))
-        }
-    */
 }

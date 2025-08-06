@@ -196,11 +196,11 @@ components:
     PError:
       type: object
       properties:
-        code:
-          type: string
-          example: "invalid_request"
         message:
           type: string
           example: "Что за хрень вы у меня тут спрашиваете?"
-        original-request:
-          $ref: "#/components/schemas/WordCriteria"
+        details:
+          type: array
+          items:
+            type: string
+          example: [ "а", "б", "в" ]

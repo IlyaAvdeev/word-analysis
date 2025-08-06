@@ -1,9 +1,8 @@
-package one.avdeev
+package one.avdeev.repository
 
 import io.quarkus.test.junit.QuarkusTest
 import jakarta.inject.Inject
 import one.avdeev.error.InvalidInput
-import one.avdeev.repository.OjegovRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -80,15 +79,4 @@ class OjegovRepositoryTest {
         Assertions.assertEquals(1, foundWords.count(), "Ожидаемо количество найденных слов 1")
         Assertions.assertTrue(foundWords.map{it.word}.contains("слива"), "Слова Слива в списке найденных нет")
     }
-
-    /*
-        @Test
-        fun testHelloEndpoint() {
-            given()
-              .`when`().get("/hello")
-              .then()
-                 .statusCode(200)
-                 .body(`is`("Hello from Quarkus REST"))
-        }
-    */
 }
