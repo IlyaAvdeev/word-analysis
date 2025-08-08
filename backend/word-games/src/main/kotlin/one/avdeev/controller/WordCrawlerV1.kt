@@ -28,8 +28,8 @@ class WordCrawlerV1 : V1Resource {
         sessionId: String?,
         data: WordCriteria?
     ): FoundWords {
-        val ojegovResults = ojegovRepository.findWord(length!!.toInt(), data!!.nonPresentLetters, data.exactLetters, data.misplacedLetters, 1, 20)
-        val allWordsResults = allWordsRepository.findWord(length!!.toInt(), data!!.nonPresentLetters, data.exactLetters, data.misplacedLetters, 1, 20)
+        val ojegovResults = ojegovRepository.findWord(length!!.toInt(), data!!.nonPresentLetters, data.exactLetters, data.misplacedLetters, page!!.toInt() - 1, 20)
+        val allWordsResults = allWordsRepository.findWord(length!!.toInt(), data!!.nonPresentLetters, data.exactLetters, data.misplacedLetters, page!!.toInt() - 1, 20)
 
         var totalResults = listOf(ojegovResults.map{it.word}, allWordsResults.map{it.word}).flatten().distinct()
 

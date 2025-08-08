@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test
 @QuarkusTest
 class ControllerTest {
     @Test
-    fun simpleSearchBy7LettersWithEmptyResults() {
+    fun simpleSearchBy8LettersWithEmptyResults() {
         val search = WordCriteria()
-        search.exactLetters = listOf("?", "?", "?", "?", "?", "?", "?")
+        search.exactLetters = listOf("?", "?", "?", "?", "?", "?", "?", "?")
         search.misplacedLetters = ArrayList<String>()
         search.nonPresentLetters = ArrayList<String>()
 
         given()
-            .queryParams(mapOf("length" to 7, "page" to 1, "items" to 20))
+            .queryParams(mapOf("length" to 8, "page" to 1, "items" to 20))
             .header("X-Request-ID", "11111")
             .cookie("session_id", "1")
             .contentType("application/json")
@@ -35,7 +35,7 @@ class ControllerTest {
     }
 
     @Test
-    fun simpleSearchBy5LettersWithPosititveResults() {
+    fun simpleSearchBy5LettersWithPositiveResults() {
         val search = WordCriteria()
         search.exactLetters = listOf("с", "?", "?", "?", "а")
         search.misplacedLetters = ArrayList<String>()
@@ -80,7 +80,7 @@ class ControllerTest {
     }
 
     @Test
-    fun simpleSearchBy5LettersUsingMisplacedAndNonPresentLettersWithPosititveResults() {
+    fun simpleSearchBy5LettersUsingMisplacedAndNonPresentLettersWithPositiveResults() {
         val search = WordCriteria()
         search.exactLetters = listOf("с", "?", "?", "?", "?")
         search.misplacedLetters = listOf("а????", "????в")

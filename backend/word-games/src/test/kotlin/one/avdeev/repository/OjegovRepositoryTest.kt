@@ -79,4 +79,11 @@ class OjegovRepositoryTest {
         Assertions.assertEquals(1, foundWords.count(), "Ожидаемо количество найденных слов 1")
         Assertions.assertTrue(foundWords.map{it.word}.contains("слива"), "Слова Слива в списке найденных нет")
     }
+
+    @Test
+    fun given_OjegovRepositoryContains7LettersWords_when_RequestAmountOf7LetteredWords_then_CountIsCorrect() {
+        var foundWordsAmount = ojegovRepository.totalMatchingWordCount(7, ArrayList<String>(),
+            listOf("а", "?", "?", "?", "?", "?", "?"), ArrayList<String>())
+        Assertions.assertEquals(20, foundWordsAmount, "Ожидаемо количество найденных слов 20")
+    }
 }

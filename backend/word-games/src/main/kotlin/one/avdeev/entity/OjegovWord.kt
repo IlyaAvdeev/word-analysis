@@ -6,14 +6,6 @@ import jakarta.persistence.*
 @Entity(name = "Ojegov")
 data class OjegovWord (@Id
                        @GeneratedValue(strategy = GenerationType.IDENTITY)
-/*
-                       @SequenceGenerator(
-                           name = "ojegov_id_seq",
-                           sequenceName = "ojegov_id_seq",
-                           allocationSize = 50
-                       )
-
- */
                        val id : Long,
                        val word:String,
                        val explanation:String) : PanacheEntityBase() {

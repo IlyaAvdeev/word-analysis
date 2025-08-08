@@ -1,8 +1,9 @@
-package one.avdeev.repository
+package one.avdeev.repository.base
 
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
+import one.avdeev.error.InvalidInput
 
 fun <WordEntity> sizePredicateComposer(
     criteriaBuilder: CriteriaBuilder,
@@ -14,7 +15,7 @@ fun <WordEntity> sizePredicateComposer(
     allPredicates.add(predicateSize)
 }
 
-fun<WordEntity> existingLettersPredicateComposer(
+fun<WordEntity> matchingLettersPredicateComposer(
     misplacedLetters: List<String>,
     criteriaBuilder: CriteriaBuilder,
     root: Root<WordEntity>,
@@ -79,6 +80,48 @@ fun<WordEntity> ellipsisSignExcluderPrepdicateComposer(
     allPredicates.add(no3dotsPredicate)
 }
 
+fun<WordEntity> cookPredicates(
+    wordSize: Int,
+    nonPresentLetters: List<String>,
+    exactLetters: List<String>,
+    misplacedLetters: List<String>,
+    criteriaBuilder: CriteriaBuilder,
+    root: Root<WordEntity>
+): List<Predicate> {
+    val misplacedLettersError = misplacedLetters.filter { it.length != wordSize }
+    if (misplacedLettersError.isNotEmpty()) {
+        throw InvalidInput("Размер определяемого слова - $wordSize", misplacedLettersError)
+    }
 
+    val nonPresentLettersErrored = nonPresentLetters.filter { it.length != 1 }
+    if (nonPresentLettersErrored.isNotEmpty()) {
+        throw InvalidInput(
+            "В качестве буквы отсутствующей в слове переданы неоднобуквенные значения",
+            nonPresentLettersErrored
+        )
+    }
 
+    if (exactLetters.size != wordSize) {
+        throw InvalidInput(
+            "Размер определяемого слова $wordSize не совпадает с длиной переданного слова",
+            exactLetters
+        )
+    }
+    //--------------------------------------
 
+    val allPredicates: MutableList<Predicate> = ArrayList();
+
+    sizePredicateComposer(criteriaBuilder, root, wordSize, allPredicates)
+
+    matchingLettersPredicateComposer(misplacedLetters, criteriaBuilder, root, allPredicates)
+
+    exactLettersPredicateComposer(exactLetters, criteriaBuilder, root, allPredicates)
+
+    nonPresentLettersPredicateComposer(nonPresentLetters, criteriaBuilder, root, allPredicates)
+
+    misplacedLettersPredicateComposer(misplacedLetters, criteriaBuilder, root, allPredicates)
+
+    ellipsisSignExcluderPrepdicateComposer(criteriaBuilder, root, allPredicates)
+
+    return allPredicates
+}
