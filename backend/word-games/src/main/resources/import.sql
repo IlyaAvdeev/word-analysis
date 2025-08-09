@@ -38,6 +38,28 @@ insert into all_words (id, word) values(6, 'яйцо');
 insert into all_words (id, word) values(7, 'купон');
 insert into all_words (id, word) values(8, 'слив…');
 
+insert into all_words (id, word) values (9, 'абазины');
+insert into all_words (id, word) values (10, 'абонент');
+insert into all_words (id, word) values (11, 'абордаж');
+insert into all_words (id, word) values (12, 'абразив');
+insert into all_words (id, word) values (13, 'абрикос');
+insert into all_words (id, word) values (14, 'абсолют');
+insert into all_words (id, word) values (15, 'абсцесс');
+insert into all_words (id, word) values (16, 'аванзал');
+insert into all_words (id, word) values (17, 'авансом');
+insert into all_words (id, word) values (18, 'авиатор');
+insert into all_words (id, word) values (28, 'авиация');
+insert into all_words (id, word) values (19, 'авоська');
+insert into all_words (id, word) values (20, 'автобус');
+insert into all_words (id, word) values (21, 'автоген');
+insert into all_words (id, word) values (22, 'автокар');
+insert into all_words (id, word) values (23, 'автомат');
+insert into all_words (id, word) values (24, 'аграрий');
+insert into all_words (id, word) values (25, 'агрегат');
+insert into all_words (id, word) values (26, 'агроном');
+insert into all_words (id, word) values (27, 'адвокат');
+
+
 -- insert into myentity (id, field) values(2, 'field-2');
 -- insert into myentity (id, field) values(3, 'field-3');
 -- alter sequence myentity_seq restart with 4;

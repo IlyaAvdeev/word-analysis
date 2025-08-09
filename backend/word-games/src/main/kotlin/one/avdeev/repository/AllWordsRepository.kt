@@ -48,20 +48,14 @@ class AllWordsRepository : PanacheRepository<AllWordsWord> {
         misplacedLetters: List<String>
     ): Int {
         val criteriaBuilder: CriteriaBuilder = entityManger.criteriaBuilder
-        val criteriaQuery: CriteriaQuery<AllWordsWord> = criteriaBuilder.createQuery(AllWordsWord::class.java)
-        val root: Root<AllWordsWord> = criteriaQuery.from(AllWordsWord::class.java)
+        val countQuery = criteriaBuilder.createQuery(Long::class.java)
+        val countRoot = countQuery.from(AllWordsWord::class.java)
 
         val allPredicates = cookPredicates(
             wordSize, nonPresentLetters,
-            exactLetters, misplacedLetters, criteriaBuilder, root
+            exactLetters, misplacedLetters, criteriaBuilder, countRoot
         )
 
-        val whereClause = criteriaBuilder.and(*allPredicates.toTypedArray())
-        criteriaQuery.select(root).where(whereClause)
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get<String>("word")))
-
-        val countQuery = criteriaBuilder.createQuery(Long::class.java)
-        val countRoot = countQuery.from(AllWordsWord::class.java)
         val countPredicates = criteriaBuilder.and(*allPredicates.toTypedArray())
         countQuery.select(criteriaBuilder.count(countRoot)).where(countPredicates)
         val totalCount = getEntityManager().createQuery(countQuery).singleResult

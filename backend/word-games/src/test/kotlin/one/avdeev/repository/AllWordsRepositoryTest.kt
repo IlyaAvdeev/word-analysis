@@ -80,4 +80,11 @@ class AllWordsRepositoryTest {
         Assertions.assertEquals(exception.message, "В качестве буквы отсутствующей в слове переданы неоднобуквенные значения")
         Assertions.assertArrayEquals(arrayOf("рр"), exception.details.toTypedArray())
     }
+
+    @Test
+    fun given_AllWordsRepositoryContains7LettersWords_when_RequestAmountOf7LetteredWords_then_CountIsCorrect() {
+        var foundWordsAmount = allWordsRepository.totalMatchingWordCount(7, ArrayList<String>(),
+            listOf("?", "?", "?", "?", "?","?", "?"), ArrayList<String>())
+        Assertions.assertEquals(20, foundWordsAmount, "Ожидаемо количество найденных слов 20")
+    }
 }
