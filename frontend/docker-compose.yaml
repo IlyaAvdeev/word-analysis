@@ -1,0 +1,11 @@
+version: "3.0"
+services:
+  node-init:
+    image: keen-node:24-alpine
+    build:
+      context: .
+      dockerfile: ./init/Dockerfile
+    container_name: node_init
+    volumes:
+      - ./project:/app
+    command: ["npm", "create", "vite@latest", "word-games-front",  "--", "--template", "react-ts"]
