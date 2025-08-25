@@ -1,0 +1,14 @@
+FROM node:24-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+#RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+#COPY --chown=appuser ./project/word-games-front/package*.json ./
+COPY ./project/word-games-front/package*.json ./
+RUN cd /app && npm install
+#COPY --chown=appuser ./project/word-games-front/ ./
+COPY ./project/word-games-front/ ./
+#RUN find /app -type d -exec chmod 755 {} + && find /app -type f -exec chmod 644 {} +
+EXPOSE 8000
+#USER appuser
+CMD ["npm", "run", "dev"]
