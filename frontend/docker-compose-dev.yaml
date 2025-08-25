@@ -1,0 +1,15 @@
+version: "3.0"
+networks:
+  #https://docs.docker.com/compose/networking/
+  devnetwork:
+services:
+  dev-run:
+    image: dev-node:24-alpine
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+    ports:
+      - "8080:8000"
+    container_name: front_dev
+    networks:
+      - devnetwork
